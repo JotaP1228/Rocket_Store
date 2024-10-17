@@ -1,0 +1,65 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+footer {
+    margin-top: auto;
+    background-color: #feab01;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.trabaja_nosotros {
+    display: flex;
+    flex-direction: column;
+    padding: 3%;
+}
+
+.rowss {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.formInicio {
+    height: 400px;
+    width: 350px;
+    background-color: #feab01;
+    border: 2px solid rgb(0, 0, 0);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.termYcond {
+    display: flex;
+    flex-direction: column;
+    padding: 3%;
+}
+
+#formRegistrar {
+    height: 600px;
+    width: 350px;
+    background-color: #feab01;
+    border: 2px solid rgb(0, 0, 0);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.contenedor-carrito {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: row;
+    width: 100%;
+    padding: 4%;
+
+}
+
+.resumen {
+    width: 30%;
+    padding: 5%;
+}

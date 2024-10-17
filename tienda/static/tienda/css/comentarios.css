@@ -1,0 +1,14 @@
+#like {
+    color: black;
+}
+
+.btn-link i {
+    margin-right: 0.2rem;
+}
+
+#like:hover{
+    color: inherit;
+}
+.num{
+    color: black;
+}

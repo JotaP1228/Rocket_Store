@@ -1,0 +1,60 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block titulo %}usuarios{% endblock %}
+
+{% block contenedor %}
+<br>
+    <div class="container mt-4">
+
+        <h1 class="titul" style="text-align: center;">Usuarios</h1>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Foto</th>
+                        <th>Operaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in data %}
+                        <tr>
+                            <td>{{ r.id }}</td>
+                            <td>{{ r.nombre }}</td>
+                            <td>{{ r.email }}</td>
+                            <td>{{ r.rol }}</td>
+                            <td>
+                                {% if r.foto %}
+                                    <img src="{{ r.foto.url }}" alt="Foto de {{ r.nombre }}" style="width: 50px; height: 50px; border-radius: 50%;" />
+                                {% else %}
+                                    <img src="{% static 'fotos/default.png' %}" alt="Foto de {{ r.nombre }}" style="width: 50px; height: 50px; border-radius: 50%;" />
+                                {% endif %}
+                            </td>
+                            
+                            <td>
+                                <a class="btn btn-danger" href="javascript:eliminar('{% url 'usuarios_eliminar' r.id %}')">Eliminar</a>
+                                <a class="btn btn-info" href="{% url 'usuarios_formulario_editar' r.id %}">Editar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+{% endblock %}

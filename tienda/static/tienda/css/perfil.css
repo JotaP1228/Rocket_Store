@@ -1,0 +1,9 @@
+#card {
+    max-width: 540px;
+}
+
+.editar{
+    background-color: aqua;
+    color: black;
+    width: 90px;
+}

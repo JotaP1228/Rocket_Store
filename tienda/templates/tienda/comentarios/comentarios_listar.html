@@ -1,0 +1,60 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Listar comentarios{% endblock %}
+
+{% block contenedor %}
+
+<head>
+    <div id="csrf-token" style="display: none;">{{ csrf_token }}</div>
+    <link rel="icon" href="{% static 'ruta/a/tu/favicon.ico' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="{% static 'tienda/css/comentarios.css' %}" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'tienda/js/libreria.js' %}"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</head>
+
+
+
+<body>
+    <h1>COMENTARIOS</h1>
+    <a class="btn btn-success" href="{% url 'comentarios_form' %}">Agregar</a>
+    <br>
+    <div class="row" style="display: flex; justify-content: center;">
+        {% for c in comentarios %}
+            <div class="col-md-3 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title" style="display: flex; justify-content: space-between;">
+                            Comentario
+                            <button type="button" class="btn btn-link text-decoration-none" onclick="darLike('{{ c.id }}');">
+                                <i class="bi bi-hand-thumbs-up-fill"></i>
+                                <span id="likes-count-{{ c.id }}">{{ c.likes }}</span>
+                            </button>
+                        </h5>
+                        <p class="card-text">{{ c.comentarios }}</p>
+                        <a class="btn btn-danger" href="javascript:eliminar('{% url 'comentarios_eliminar' c.id %}')">Eliminar</a>
+                        <a class="btn btn-primary" href="{% url 'comentarios_editar' c.id %}">Editar</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
+</body>
+
+
+
+{% endblock %}

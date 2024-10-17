@@ -1,0 +1,31 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tienda SENA - {% block titulo %}...{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'tienda/css/estilos.css' %}" />
+    <link rel="stylesheet" href="{% static 'tienda/css/bootstrap.min.css' %}" />
+</head>
+<body>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags and message.tags != 'error' %}{{ message.tags }}{% else %}danger{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block contenedor %}
+        ...
+    {% endblock %}
+
+    <script src="{% static 'tienda/js/libreria.js' %}"></script>
+    <script src="{% static 'tienda/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

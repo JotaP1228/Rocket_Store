@@ -1,0 +1,19 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Actualizar Comentarios{% endblock %}
+
+{% block contenedor %}
+
+    <h1 class="titul">Actualizar Comentarios ({{ comentarios.id }})</h1>
+    <h1 class="titul">Actualizar Comentarios ({{ comentarios.id }})</h1>
+        <form action="{% url 'comentarios_actualizar' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ comentarios.id }}">
+            <label class="form-control">Nombre</label>
+            <input class="form-control" type="text" name="comentarios" value="{{ comentarios.comentarios }}" /><br> <!-- Cambiado aquí -->
+            <button type="submit" class="btn btn-success">Actualizar</button>
+        </form>
+
+
+{% endblock %}

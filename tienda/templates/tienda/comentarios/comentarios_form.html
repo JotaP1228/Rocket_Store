@@ -1,0 +1,16 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Crear comentario{% endblock %}
+
+{% block contenedor %}
+
+    <h1 class="titul">Crear Comentario</h1>
+    <div class="formularioTall">
+        <form method="POST" action="{% url 'comentarios_crear' %}">
+            {% csrf_token %}
+            <textarea name="comentarios" required></textarea>
+            <button type="submit">Enviar</button>
+        </form>        
+    </div>
+{% endblock %}

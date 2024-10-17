@@ -1,0 +1,107 @@
+#main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    padding-top: 20px;
+}
+
+#filtro {
+    display: flex;
+    flex-direction: column;
+    align-items: normal;
+    height: 100%;
+    width: 40%;
+    padding: 1% 5% 1% 5%;
+    background-color: gainsboro;
+    margin-right: 30px;
+}
+
+#botones {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#categorias {
+    color: #000000;
+}
+
+#etiquetas {
+    padding: 5px;
+    font-size: 1.15rem;
+    color: black;
+}
+
+.checkbox-label {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 5px;
+    border: 2px solid #feab01;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #ffffff;
+    transition: background-color 0.3s, border-color 0.3s;
+    color: black;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 24px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-container input[type="checkbox"]:checked+.checkbox-label {
+    background-color: #feab01;
+    border: 2px solid black;
+
+}
+
+#productos {
+    display: flex;
+    flex-direction: column;
+    align-items: normal;
+    height: 100%;
+    width: 100%;
+}
+
+.Productoimg {
+    display: flex;
+    width: 250px;
+    height: 250px;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-btn {
+    background-color: #000000;
+    color: white;
+
+}
+
+.custom-btn2 {
+    background-color: #feab01;
+    color: black;
+}
+
+.contenedor-main {
+    display: flex;
+    flex-direction: row;
+}
+
+#carouselExampleIndicators {
+    border: solid 4px rgb(228, 0, 0);
+}
+
+.carousel-item {
+    transition: none !important;
+}
+
+.carousel-item img {
+    object-fit: cover;
+    height: 400px;
+    /* Ajusta según tu preferencia */
+    width: 100%;
+}

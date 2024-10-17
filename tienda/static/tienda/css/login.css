@@ -1,0 +1,19 @@
+#cuadroLogin {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    padding-bottom: 50px;
+    padding-top: 50px;
+}
+
+.cuadroLogin {
+    height: 400px;
+    width: 350px;
+    background-color: #feab01;
+    border: 2px solid rgb(0, 0, 0);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+

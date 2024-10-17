@@ -1,0 +1,54 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Actualizar Devolución{% endblock %}
+
+{% block contenedor %}
+<div class="container d-flex justify-content-center align-items-center" style="height: 130vh;">
+    <div class="border p-4 shadow" style="width: 100%; max-width: 700px;">
+        <h1 class="text-center mb-4">Actualizar Devolución ({{ data.id }})</h1>        
+        <form action="{% url 'devoluciones_actualizar' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ data.id }}">
+            
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input class="form-control" type="text" name="nombre" value="{{ data.nombre }}" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Correo Electrónico</label>
+                <input class="form-control" type="email" name="email" value="{{ data.email }}" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Teléfono</label>
+                <input class="form-control" type="number" name="telefono" value="{{ data.telefono }}" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Motivo de Devolución</label>
+                <input class="form-control" type="text" name="descripcion" value="{{ data.descripcion }}" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Cargar Nueva Imagen (opcional)</label>
+                <input type="file" name="image" class="form-control" />
+            </div>
+
+            <h3>Imagen Actual:</h3>
+            {% if data.image %}
+                <img src="{{ data.image.url }}" alt="Imagen actual" style="width: 100px; height: auto;" />
+            {% else %}
+                <p>No hay imagen cargada.</p>
+            {% endif %}
+            <br>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

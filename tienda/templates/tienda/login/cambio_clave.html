@@ -1,0 +1,30 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Inicio{% endblock %}
+
+{% block contenedor %}
+<div style="display: flex; justify-content: center; align-items: center; height: 90vh;">
+
+    <div style="border: 2px solid; width: 100%; max-width: 700px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+
+        <h1 class="titul" style="text-align: center;">Cambiar contraseña</h1>
+        <form action="{% url 'cambiar_clave' %}" method="post" class="mb-3 mt-5 w-100 h-100 ml-0 mr-0 mx-auto" style="max-width: 540px;">
+            {% csrf_token %}
+
+            <label class="form-control" style="border: 2px solid; padding: 10px; border-radius: 4px;">Contraseña actual</label>
+            <input type="password" name="clave" required="" autofocus="" class="form-control"><br><br>
+
+            <label class="form-control" style="border: 2px solid; padding: 10px; border-radius: 4px;">Contraseña nueva</label>
+            <input type="password" name="nueva1" required="" class="form-control"><br>
+            
+            <label class="form-control" style="border: 2px solid; padding: 10px; border-radius: 4px;">Repetir Contraseña</label>
+            <input type="password" name="nueva2" required="" class="form-control"><br>
+
+            <div style="text-align: center;">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>          </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Actualizar Producto{% endblock %}
+
+{% block contenedor %}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="border rounded shadow-lg p-4" style="width: 100%; max-width: 700px;">
+        <h1 class="text-center mb-4">Actualizar Producto ({{ data.id }})</h1>
+        
+        <form action="{% url 'productos_actualizar' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ data.id }}">
+            
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input class="form-control" type="text" name="nombre" value="{{ data.nombre }}" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Precio</label>
+                <input class="form-control" type="number" name="precio" value="{{ data.precio }}" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Información</label>
+                <input class="form-control" type="text" name="informacion" value="{{ data.informacion }}" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Inventario</label>
+                <input class="form-control" type="number" name="inventario" value="{{ data.inventario }}" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Fecha de Creación</label>
+                <input class="form-control" type="date" name="fecha_creacion" value="{{ data.fecha_creacion|date:'Y-m-d' }}" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tallas a seleccionar</label>
+                {% for t in talla %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="talla" value="{{ t.id }}" id="talla_{{ t.id }}">
+                        <label class="form-check-label" for="talla_{{ t.id }}">{{ t.talla }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Categoría</label>
+                <select class="form-select" name="categoria" required>
+                    <option value="">Seleccione</option>
+                    {% for c in categoria %}
+                        <option value="{{ c.id }}" {% if data.categoria.id == c.id %}selected{% endif %}>{{ c.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Etiqueta</label>
+                {% for e in etiqueta %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="etiqueta" value="{{ e.id }}" id="etiqueta_{{ e.id }}">
+                        <label class="form-check-label" for="etiqueta_{{ e.id }}">{{ e.nombre }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Foto Actual</label>
+                {% if data.foto %}
+                    <img src="{{ data.foto.url }}" alt="{{ data.nombre }}" class="img-fluid mb-2" style="width: 100px; height: auto;"/>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Seleccionar Nueva Imagen</label>
+                <input class="form-control" type="file" name="foto" accept="image/*" />
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}registro{% endblock %}
+
+{% block contenedor %}
+
+<form action="{% url 'registrar_usuario' %}" method="post" class="col-3 m-auto mt-5">
+    <h3>Complete el formulario</h3>
+    {% csrf_token %}
+    <input type="text" name="nombre" class="form-control" placeholder="Nombre" required=""><br>
+    <input type="email" name="correo" class="form-control" placeholder="Correo" required=""><br>
+    <input type="password" name="clave1" class="form-control" placeholder="Contraseña" required=""><br>
+    <input type="password" name="clave2" class="form-control" placeholder="Repita Contraseña" required=""><br>
+    <button type="submit" class="btn btn-info">Registrarse</button>
+</form>
+
+{% endblock %}

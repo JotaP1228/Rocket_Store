@@ -1,0 +1,35 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Actualizar Etiqueta{% endblock %}
+
+{% block contenedor %}
+<div class="container d-flex justify-content-center align-items-center" style="height: 60vh;">
+
+    <div class="border p-4 shadow" style="width: 100%; max-width: 700px;">
+        <h1 class="text-center mb-4">Actualizar Etiqueta ({{ data.nombre }})</h1>
+        <form action="{% url 'etiquetas_actualizar' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ data.id }}">
+
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input class="form-control" type="text" name="nombre" value="{{ data.nombre }}" required />
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Categoría</label>
+                <select class="form-control" name="categoriaEtiqueta" required>
+                    {% for i in categorias %}
+                        <option value="{{ i.id }}" {% if i.id == data.categoria.id %}selected{% endif %}>{{ i.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

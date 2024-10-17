@@ -1,0 +1,63 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load humanize %}
+
+<h1 class="btn custom-btn">Carrito de Compras ({{ items }})</h1>
+
+{% block contenedor %}
+<main style="margin-bottom: 60px;">
+    {% if request.session.carrito %}
+        <div class="contenedor-carrito">
+            <div class="productos">
+                {% for p in request.session.carrito %}
+                    <div class="card mb-3" style="max-width: 800px; margin: auto; border: 1px solid #ddd; border-radius: 8px;">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{{ p.foto }}" class="img-fluid rounded-start" alt="{{ p.producto }}" style="height: 250px; object-fit: cover;">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ p.producto }}</h4>
+                                    <p class="text-muted">Categoría: <strong>{{ p.categoria }}</strong></p>
+                                    <p class="text-muted">Información: <strong>{{ p.informacion }}</strong></p>
+                                    
+
+                                    <div class="d-flex align-items-center">
+                                        <input type="hidden" name="id" id="id_{{ p.id }}" value="{{ p.id }}" />
+                                        <input oninput="actualizar_totales_carrito(`{% url 'actualizar_totales_carrito' p.id %}`, {{ p.id }});" 
+                                        type="number" 
+                                        style="width: 80px; margin-right: 10px;" 
+                                        name="cantidad" id="cantidad_carrito_{{ p.id }}" 
+                                        min="1" 
+                                        max="{{ p.inventario }}" 
+                                        value="{{ p.cantidad }}" 
+                                        size="3" />
+
+                                        <a class="btn btn-danger" href="{% url 'eliminar_item_carrito_ver' p.id %}">Eliminar</a>
+                                    </div>
+
+                                    <p class="card-text mt-3"><small class="text-body-secondary">Subtotal: ${{ p.subtotal|floatformat:0|intcomma }}</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="resumen" style="display: flex; align-items:center; justify-content: center; margin-top: 20px;">   
+                <div class="card" style="border: 1px solid #ddd; width: 25rem;">
+                    <div class="card-body" id="resumen">
+                        <h5 class="card-title text-center">Resumen del Carrito</h5>
+                        <p class="text-center"><strong>TOTAL:</strong> ${{ total|floatformat:0|intcomma }}</p>
+                        <div class="d-flex justify-content-around">
+                            <a class="btn btn-success" href="{% url 'realizar_venta' %}">Pagar</a>
+                            <a class="btn btn-warning" href="{% url 'vaciar_carrito' %}">Vaciar Carrito</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-center">No hay productos en el carrito.</p>
+    {% endif %}
+</main>
+{% endblock %}

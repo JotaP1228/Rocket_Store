@@ -1,0 +1,79 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Inicio{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'tienda/css/perfil.css' %}">
+{% endblock %}
+
+{% block contenedor %}
+<br>
+    <h1 class="titul" style="text-align: center;">Perfil</h1>
+    <div id="card" class="card mb-3 mt-5 w-100 h-100 ml-0 mr-0 mx-auto" style="max-width: 540px;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="{{ data.foto.url }}" class="img-fluid rounded-start" alt="..." onerror="this.style.display='none';">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ data.nombre }}</h5>
+                    <p class="card-text">
+                        Correo: {{ data.email }}<br/>
+                        Rol: {{ data.get_rol_display }}<br/>
+                    </p>
+                    <p class="card-text">
+                        <small class="text-body-secondary">
+                            Id de usuario: {{ data.id }}
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <button id="editar" style="width: 120px; margin-left: 900px;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Editar Perfil
+    </button>
+    <br>
+    
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Edita tu perfil</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
+
+                    <div style="width: 100%; max-width: 700px; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                
+                        <h1 class="titul" style="text-align: center;">Editar Perfil ({{ data.id }})</h1>
+                        <form action="{% url 'edite_profile' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ data.id }}">
+                            <label class="form-control" style="border: 2px solid; padding: 10px; border-radius: 4px;">Nombre</label>
+                            <input class="form-control" type="text" name="nombre" value="{{ data.nombre }}" /><br>
+                
+                            <label class="form-control" style="border: 2px solid; padding: 10px; border-radius: 4px;">Correo</label>
+                            <input class="form-control" type="text" name="email" value="{{ data.email }}" /><br>
+                            
+                            <label class="form-control" style="border: 2px solid; padding: 10px; border-radius: 4px;">Cargar Imagen</label>
+                            <input class="form-control" type="file" name="image" />
+
+                            <br>
+                            <div style="text-align: center;">
+                                <button type="submit" class="btn btn-success">Actualizar</button>
+                            </div> 
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                          
+        </div>
+        </div>
+        </div>
+    </div>
+{% endblock %}

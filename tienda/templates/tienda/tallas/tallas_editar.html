@@ -1,0 +1,27 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Actualizar Tallas{% endblock %}
+
+{% block contenedor %}
+<div class="container d-flex justify-content-center align-items-center" style="height: 50vh;">
+
+    <div class="border p-4 shadow" style="width: 100%; max-width: 700px;">
+        <h1 class="text-center mb-4">Actualizar Talla ({{ talla.id }})</h1>
+        <form action="{% url 'tallas_actualizar' %}" method="post">
+            {% csrf_token %}
+            
+            <input type="hidden" name="id" value="{{ talla.id }}">
+            
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input class="form-control" type="text" name="talla" value="{{ talla.talla }}" required />
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Actualizar</button>
+            </div>        
+        </form>
+    </div>
+</div>
+{% endblock %}

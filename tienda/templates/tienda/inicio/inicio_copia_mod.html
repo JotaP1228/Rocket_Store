@@ -1,0 +1,44 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Inicio{% endblock %}
+
+{% block contenedor %}
+    <h1 class="titul">Inicio</h1>
+
+    {% if data %}
+        <div class="mb-3 mt-5 w-100 h-100 ml-0 mr-0 mx-auto" style="max-width: 840px;">
+        {%  for p in data %}
+            {% if forloop.first %}
+                <div style="clear:left;">
+            {% endif %}
+
+            {% if forloop.counter0|divisibleby:4 %}
+                <!-- ====Paginar=== -->
+                </div>
+                <div style="clear:left;">
+            {% endif %}
+
+            <div class="card h-100 m-2" style="float:left;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ p.nombre }}</h5>
+                    <p class="card-text">producto</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-body-secondary">Last updated 3 mins ago</small>
+                </div>
+            </div>
+
+
+                    {% if forloop.last %}
+                </div>
+            {% endif %}
+
+
+        {% endfor %}
+        </div>
+    {% else %}
+        No hay productos en la tienda
+    {% endif %}
+{% endblock %}

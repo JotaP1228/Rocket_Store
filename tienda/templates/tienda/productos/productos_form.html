@@ -1,0 +1,95 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Crear Productos{% endblock %}
+
+{% block contenedor %}
+
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="border rounded shadow-lg p-4" style="width: 100%; max-width: 700px;">
+            <h1 class="text-center mb-4">Crear Producto</h1>
+
+            <form action="{% url 'productos_crear' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input class="form-control" type="text" name="nombre" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Precio</label>
+                    <input class="form-control" type="number" name="precio" required step="0.01" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Información</label>
+                    <textarea class="form-control" name="informacion" rows="3" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Inventario</label>
+                    <input class="form-control" type="number" name="inventario" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Fecha de Creación</label>
+                    <input class="form-control" type="date" name="fecha_creacion" id="fecha_creacion" required />
+                </div>
+
+                <label class="form-label">Tallas a seleccionar</label>
+                <div class="mb-3">
+                    {% for t in talla %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="talla" value="{{ t.id }}" id="talla_{{ t.id }}">
+                            <label class="form-check-label" for="talla_{{ t.id }}">{{ t.talla }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Categoría</label>
+                    <select class="form-select" name="categoria" required>
+                        {% for c in data %}
+                            <option value="{{ c.id }}">{{ c.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <label class="form-label">Etiquetas</label>
+                <div class="mb-3">
+                    {% for e in etiqueta %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="etiqueta" value="{{ e.id }}" id="etiqueta_{{ e.id }}">
+                            <label class="form-check-label" for="etiqueta_{{ e.id }}">{{ e.nombre }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Foto</label>
+                    <input class="form-control" type="file" name="foto" required />
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fechaInput = document.getElementById('fecha_creacion');
+            const hoy = new Date();
+            const dd = String(hoy.getDate()).padStart(2, '0');
+            const mm = String(hoy.getMonth() + 1).padStart(2, '0'); // Enero es 0
+            const yyyy = hoy.getFullYear();
+
+            hoy.setHours(0, 0, 0, 0); // Opcional: para que no afecte la hora
+            const fechaLimite = `${yyyy}-${mm}-${dd}`;
+            fechaInput.setAttribute('max', fechaLimite);
+        });
+    </script>
+
+{% endblock %}

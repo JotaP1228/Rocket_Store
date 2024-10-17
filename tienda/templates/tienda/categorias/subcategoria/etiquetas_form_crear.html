@@ -1,0 +1,35 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+
+{% block titulo %}Crear Etiqueta{% endblock %}
+
+{% block contenedor %}
+<div class="container d-flex justify-content-center align-items-center" style="height: 60vh;">
+
+    <div class="border p-4 shadow" style="width: 100%; max-width: 700px;">
+        <h1 class="text-center mb-4">Crear Etiqueta</h1>
+        <form action="{% url 'etiquetas_crear' %}" method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label class="form-label">Nombre de la Etiqueta</label>
+                <input class="form-control" type="text" name="nombre" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Categoría de la Etiqueta</label>
+                <select class="form-control" name="categoriaEtiqueta" required>
+                    {% for i in data %}
+                        <option value="{{ i.id }}">{{ i.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

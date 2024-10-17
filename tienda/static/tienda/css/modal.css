@@ -1,0 +1,48 @@
+#modal {
+    width: 700px;
+    margin-left: -100px;
+}
+
+#logo {
+    width: 100px;
+    padding: 10px
+}
+
+.modal-header {
+    background-color: #212529;
+}
+
+.modal-footer {
+    background-color: #ffc107;
+    display: flex;
+    justify-content: space-between;
+}
+
+.redes {
+    display: flex;
+    justify-content: space-between;
+}
+
+#facebook {
+    color: #0b82e7
+}
+
+#whatsapp {
+    color: #41c051
+}
+
+#instagram {
+    color: #f15b30
+}
+
+#facebook:hover {
+    color: black;
+}
+
+#whatsapp:hover {
+    color: black;
+}
+
+#instagram:hover {
+    color: black;
+}
