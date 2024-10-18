@@ -762,125 +762,67 @@ def cambiar_clave(request):
 
     return redirect('cc_formulario')
 
-
 def devoluciones(request):
-    logueo = request.session.get("logueo", False)
-    if not logueo:
-        messages.error(request, "No estás logueado")
-        return redirect("inicio")
     q = Devoluciones.objects.all()
-    estados = Devoluciones._meta.get_field('estado').choices
-    print(f"Estados: {estados}")
-    contexto = {"data": q, "estados": estados}
+    contexto = {"data": q}
     return render(request, "tienda/devoluciones/devoluciones.html", contexto)
 
-
-def ver_devoluciones(request):
-    logueo = request.session.get("logueo", False)
-    if not logueo:
-        messages.error(request, "No estás logueado")
-        return redirect("inicio")
-    q = Devoluciones.objects.all()
-    contexto = {"data": q}
-    return render(request, "tienda/devoluciones/ver_devolucion.html", contexto)
-
-from django.shortcuts import get_object_or_404, redirect
-
-def estado_devolucion(request, id):
-    if request.method == "POST":
-        nuevo_estado = request.POST.get("estado")
-        print(f"Nuevo estado recibido: {nuevo_estado}")
-        if nuevo_estado is None:
-            messages.error(request, "No se recibió un estado válido.")
-            return redirect("devoluciones")
-
-        try:
-            devolucion = Devoluciones.objects.get(pk=id)
-            devolucion.estado = int(nuevo_estado)
-            devolucion.save()
-            messages.success(request, "Estado actualizado correctamente.")
-        except Exception as e:
-            messages.error(request, f"Error al actualizar el estado: {e}")
-    else:
-        messages.warning(request, "No se enviaron datos.")
-    
-    return redirect("devoluciones")
-
 def devoluciones_form(request):
-    logueo = request.session.get("logueo", False)
-    if not logueo:
-        messages.error(request, "No estás logueado")
-        return redirect("inicio")
-    q = CategoriaEtiqueta.objects.all()
-    contexto = {"data": q}
-    return render(request, "tienda/devoluciones/devoluciones_form.html", contexto)
+	q = CategoriaEtiqueta.objects.all()
+	contexto = {"data": q}
+	return render(request, "tienda/devoluciones/devoluciones_form.html", contexto)
 
 def devoluciones_crear(request):
-    logueo = request.session.get("logueo", False)
-    if not logueo:
-        messages.error(request, "No estás logueado")
-        return redirect("inicio")
-    if request.method == "POST":
-        nombre = request.POST.get("nombre")
-        email = request.POST.get("email")
-        telefono = request.POST.get("telefono")
-        descripcion = request.POST.get("descripcion")
-        image = request.FILES.get("image") 
-        print(f"Datos recibidos: {nombre}, {email}, {telefono}, {descripcion}")
-        
-        try:
-            q = Devoluciones(
-                nombre=nombre,
-                email=email,
-                telefono=telefono,
-                descripcion=descripcion,
-                estado=1,
-                image=image
-            )
-            q.save()
-            messages.success(request, "Guardado correctamente!!")
-        except Exception as e:
-            messages.error(request, f"Error: {e}")
-        return redirect("devoluciones")
+	if request.method == "POST":
+		nombre = request.POST.get("nombre")
+		email = request.POST.get("email")
+		telefono = request.POST.get("telefono")
+		descripcion = request.POST.get("descripcion")
+		try:
+			q = Devoluciones(
+				nombre=nombre,
+				email=email,
+				telefono=telefono,
+				descripcion= descripcion,
+			)
+			q.save()
+			messages.success(request, "Guardado correctamente!!")
+		except Exception as e:
+			messages.error(request, f"Error: No se enviaron datos...")
+		return redirect("devoluciones")
 
+	else:
+		messages.warning(request, "Error: No se enviaron datos...")
+		return redirect("devoluciones")
 
 def devoluciones_formulario_editar(request, id):
-    logueo = request.session.get("logueo", False)
-    if not logueo:
-        messages.error(request, "No estás logueado")
-        return redirect("inicio")
-    q = Devoluciones.objects.get(pk=id)
-    contexto = {"data": q}
-    return render(request, "tienda/devoluciones/devoluciones_formulario_editar.html", contexto)
+	q = Devoluciones.objects.get(pk=id)
+	contexto = {"data": q}
+	return render(request, "tienda/devoluciones/devoluciones_formulario_editar.html", contexto)
 
 def devoluciones_actualizar(request):
-    if request.method == "POST":
-        id = request.POST.get("id")
-        nombre = request.POST.get("nombre")
-        email = request.POST.get("email")
-        telefono = request.POST.get("telefono")
-        descripcion = request.POST.get("descripcion")
-        image = request.FILES.get("image")
+	if request.method == "POST":
+		id = request.POST.get("id")
+		nombre = request.POST.get("nombre")
+		email = request.POST.get("email")
+		telefono = request.POST.get("telefono")
+		descripcion = request.POST.get("descripcion")
+		
+		try:
+			q = Devoluciones.objects.get(pk=id)
+			q.nombre = nombre
+			q.email = email
+			q.telefono = telefono
+			q.descripcion = descripcion
+			
+			q.save()
+			messages.success(request, "Devolucion actualizada correctamente!!")
+		except Exception as e:
+			messages.error(request, f"Error {e}")
+	else:
+		messages.warning(request, "Error: No se enviaron datos...")
 
-        try:
-            q = Devoluciones.objects.get(pk=id)
-            q.nombre = nombre
-            q.email = email
-            q.telefono = telefono
-            q.descripcion = descripcion
-            
-            if image:
-                q.image = image
-            
-            q.save()
-            messages.success(request, "Devolución actualizada correctamente!!")
-        except Exception as e:
-            messages.error(request, f"Error {e}")
-    else:
-        messages.warning(request, "Error: No se enviaron datos...")
-
-    return redirect("devoluciones")
-
+	return redirect("devoluciones")
 
 def devoluciones_eliminar(request, id):
 	try:
@@ -1618,3 +1560,225 @@ def tallas_eliminar(request, id):
 
 def trabaja_nosotros(request):
     return render(request, "tienda/trabaja_nosotros/trabaja_nosotros.html")
+
+
+#pedidos y devoluciones 
+from django.db.models import Sum, F
+from django.db.models import Sum, F
+
+def ver_pedidos_cliente(request):
+    logueo = request.session.get("logueo")
+    
+    if logueo:
+        usuario = Usuario.objects.get(pk=logueo["id"])
+        pedidos = Venta.objects.filter(usuario=usuario).prefetch_related('detalleventa_set').order_by('-id')
+        devoluciones = Devolucion.objects.filter(pedido__in=pedidos)
+        # Iteramos sobre cada pedido
+        for pedido in pedidos:
+            # Calcular el total del pedido (precio total de todos los productos)
+            total_pedido = pedido.detalleventa_set.aggregate(
+                total=Sum(F('cantidad') * F('precio_historico'))
+            )['total']
+            
+            # Calcular el total de productos (suma de cantidades)
+            total_productos = pedido.detalleventa_set.aggregate(
+                total_productos=Sum('cantidad')
+            )['total_productos']
+            
+            # Asignamos el total calculado al pedido
+            pedido.total_pedido = total_pedido if total_pedido else 0
+            pedido.total_productos = total_productos if total_productos else 0
+
+        # Comprobamos si hay pedidos para el usuario
+        '''if pedidos.exists():
+            print(f"Se han encontrado {pedidos.count()} pedidos para el usuario {request.user}")
+        else:
+            print(f"No se han encontrado pedidos para el usuario {request.user}")'''
+        
+        context = {
+            'pedidos': pedidos,
+			'devoluciones': devoluciones
+        }
+    else:
+        # Si el usuario no está autenticado, enviamos una lista vacía
+        context = {
+            'pedidos': []
+        }
+
+    return render(request, 'tienda/pedidos/mis_pedidos.html', context)
+
+def cancelar_pedido(request, pedido_id):
+    logueo = request.session.get("logueo")
+    
+    if logueo:
+        # Obtén el pedido que se desea cancelar
+        pedido = get_object_or_404(Venta, id=pedido_id, usuario__id=logueo['id'])
+        
+        # Eliminar el pedido
+        pedido.delete()
+        
+        messages.success(request, 'El pedido ha sido cancelado con éxito.')
+    else:
+        messages.error(request, 'Debes estar logueado para cancelar un pedido.')
+    
+    return redirect('mis_pedidos')  # Redirige a la página de mis pedidos
+
+def lista_usuarios(request):
+    usuarios = Usuario.objects.filter(venta__isnull=False).distinct()  # Usuarios que han hecho pedidos
+
+    context = {
+        'usuarios': usuarios
+    }
+    return render(request, 'tienda/pedidos/lista_usuarios.html', context)
+
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from .models import Usuario
+
+def ver_pedidos_usuario(request, usuario_id):
+    usuario = get_object_or_404(Usuario, pk=usuario_id)
+    pedidos = Venta.objects.filter(usuario=usuario).prefetch_related('detalleventa_set').order_by('-id')
+    
+    for pedido in pedidos:
+            # Calcular el total del pedido (precio total de todos los productos)
+            total_pedido = pedido.detalleventa_set.aggregate(
+                total=Sum(F('cantidad') * F('precio_historico'))
+            )['total']
+            
+            # Calcular el total de productos (suma de cantidades)
+            total_productos = pedido.detalleventa_set.aggregate(
+                total_productos=Sum('cantidad')
+            )['total_productos']
+            
+            # Asignamos el total calculado al pedido
+            pedido.total_pedido = total_pedido if total_pedido else 0
+            pedido.total_productos = total_productos if total_productos else 0
+    
+
+    context = {
+        'usuario': usuario,
+        'pedidos': pedidos
+    }
+    return render(request, 'tienda/pedidos/ver_pedidos_usuario.html', context)
+
+def cambiar_estado_pedido(request, pedido_id):
+    if request.method == 'POST':
+        pedido = get_object_or_404(Venta, id=pedido_id)
+        nuevo_estado = request.POST.get('estado')
+
+        if nuevo_estado in ['1', '2', '3']:
+            pedido.estado = int(nuevo_estado)
+            pedido.save()
+
+            # Redirige pasando el 'usuario_id'
+            return redirect('ver_pedidos_usuario', usuario_id=pedido.usuario.id)
+        else:
+            return render(request, 'tienda/error.html', {'error': 'Estado inválido'})
+
+
+#devoluciones
+
+#cliente
+def apelar_devolucion(request, pedido_id):
+    pedido = get_object_or_404(Venta, id=pedido_id)
+    # Verificamos si ya existe una devolución asociada a este pedido
+    devolucion_existente = Devolucion.objects.filter(pedido=pedido).exists()
+
+    if devolucion_existente:
+        # Si ya existe una devolución, redirigimos con un mensaje de error
+        return render(request, 'tienda/pedidos/devolucion_error.html', {'mensaje': 'Ya se ha solicitado una devolución para este pedido.'})
+    
+    
+    if request.method == "POST":
+        motivo = request.POST.get('motivo')
+        foto = request.FILES.get('foto')
+        devolucion = Devolucion.objects.create(pedido=pedido, 
+                                               usuario=request.user, 
+                                               motivo=motivo,
+                                               foto=foto if foto else None)
+        # Redirigir a la página de pedidos o a la página de devoluciones
+        return redirect('mis_pedidos')  # Cambia esto a la URL que desees
+
+    return render(request, 'tienda/devolucion/apelar_devolucion.html', {'pedido': pedido})
+
+from django.db.models import Sum, F
+
+from django.shortcuts import render
+from tienda.models import Devolucion, Usuario, Venta
+def ver_mis_devoluciones(request):
+    logueo = request.session.get("logueo")
+    
+    if logueo:
+        usuario = Usuario.objects.get(pk=logueo["id"])
+        pedidos = Venta.objects.filter(usuario=usuario).prefetch_related('detalleventa_set')
+        devoluciones = Devolucion.objects.filter(pedido__in=pedidos).order_by('-id')
+
+        # Debug: imprimir URL de las fotos de las devoluciones solo si existe
+        for devolucion in devoluciones:
+            if devolucion.foto:
+                print(f"Devolución ID: {devolucion.id}, URL de la foto: {devolucion.foto.url}")
+            else:
+                print(f"Devolución ID: {devolucion.id}, No tiene foto.")
+
+        context = {
+            'pedidos': pedidos,
+            'devoluciones': devoluciones
+        }
+    else:
+        # Si no está autenticado, se retorna una lista vacía
+        context = {
+            'pedidos': [],
+            'devoluciones': []
+        }
+
+    return render(request, 'tienda/devolucion/mis_devoluciones.html', context)
+
+#admin
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def listar_devoluciones(request):
+    devoluciones = Devolucion.objects.all().order_by('-id')  # Lista de devoluciones en orden descendente
+    pedidos = Venta.objects.prefetch_related('detalleventa_set').all()
+
+    for devolucion in devoluciones:
+        pedido = devolucion.pedido  # Asume que la devolución tiene un campo relacionado con el pedido
+        total_pedido = pedido.detalleventa_set.aggregate(
+            total=Sum(F('cantidad') * F('precio_historico'))
+        )['total'] if pedido else 0
+
+        total_productos = pedido.detalleventa_set.aggregate(
+            total_productos=Sum('cantidad')
+        )['total_productos'] if pedido else 0
+
+        pedido.total_pedido = total_pedido
+        pedido.total_productos = total_productos
+
+    context = {
+        'devoluciones': devoluciones,
+        'pedidos': pedidos
+    }
+    return render(request, 'tienda/devolucion/listar_devoluciones.html', context)
+
+def cambiar_estado_devolucion(request, devolucion_id):
+    if request.method == 'POST':
+        # Obtenemos la devolución correspondiente
+        devolucion = get_object_or_404(Devolucion, id=devolucion_id)
+        
+        # Obtenemos el nuevo estado desde el formulario
+        nuevo_estado = request.POST.get('estado')
+
+        # Verificamos que el nuevo estado sea válido
+        if nuevo_estado in ['1', '2', '3']:  # Asegúrate de que estos valores coincidan con los estados de tu modelo
+            # Asignamos el nuevo estado a la devolución
+            devolucion.estado = int(nuevo_estado)
+            devolucion.save()  # Guardamos los cambios en la base de datos
+
+            # Redirigimos al administrador a la lista de devoluciones
+            messages.success(request, 'El estado de la devolución ha sido cambiado con éxito.')
+            return redirect('listar_devoluciones')  # Asegúrate de que 'devoluciones_admin' sea la ruta correcta
+        else:
+            messages.error(request, 'Estado inválido.')
+            return redirect('listar_devoluciones')  # Redirige a la lista de devoluciones si el estado no es válido
+    else:
+        return render(request, 'tienda/error.html', {'error': 'Método no permitido'})

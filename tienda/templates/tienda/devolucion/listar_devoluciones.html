@@ -1,0 +1,93 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block titulo %}Lista de Devoluciones{% endblock %}
+
+{% block contenedor %}
+
+<div class="container mt-4">
+    <h2>Listado de Devoluciones</h2>
+    <div class="row">
+        {% for devolucion in devoluciones %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Devolución #{{ devolucion.id }}</h5>
+                    <p class="card-text">Usuario: {{ devolucion.usuario.nombre }}</p>
+                    <p class="card-text">Motivo: {{ devolucion.motivo }}</p>
+                    <p class="card-text">Estado: {{ devolucion.estado_texto }}</p>
+                    <form action="{% url 'cambiar_estado_devolucion' devolucion.id %}" method="post">
+                        {% csrf_token %}
+                        <select name="estado" class="form-control">
+                            <option value="1" {% if devolucion.estado == 1 %}selected{% endif %}>Enviada</option>
+                            <option value="2" {% if devolucion.estado == 2 %}selected{% endif %}>Aceptada</option>
+                            <option value="3" {% if devolucion.estado == 3 %}selected{% endif %}>Rechazada</option>
+                        </select>
+                        
+                        <button type="submit" class="btn btn-primary mt-2">Cambiar Estado</button>
+                        <br><br/>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#detallePedidoModal{{ devolucion.pedido.id }}">
+                            Ver detalles del pedido
+                        </button>
+                        
+                    </form>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="detallePedidoModal{{ devolucion.pedido.id }}" tabindex="-1" aria-labelledby="detallePedidoModalLabel{{ devolucion.pedido.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detallePedidoModalLabel{{ devolucion.pedido.id }}">Detalles del Pedido #{{ devolucion.pedido.id }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Usuario:</strong> {{ devolucion.pedido.usuario.nombre }}</p>
+                        <p><strong>Fecha de Venta:</strong> {{ devolucion.pedido.fecha_venta|date:"d/m/Y H:i" }}</p>
+                        <p><strong>Estado del Pedido:</strong> 
+                            {% if devolucion.pedido.estado == 1 %}
+                                Pendiente
+                            {% elif devolucion.pedido.estado == 2 %}
+                                Enviada
+                            {% else %}
+                                Recibido
+                            {% endif %}
+                        </p>
+
+                        <!-- Mostrar los productos del pedido -->
+                        <h6>Productos en este pedido:</h6>
+                        <ul class="list-group">
+                            {% for detalle in devolucion.pedido.detalleventa_set.all %}
+                                <li class="list-group-item">
+                                    <p><strong>Producto:</strong> {{ detalle.producto.nombre }}</p>
+                                    <p><strong>Cantidad:</strong> {{ detalle.cantidad }}</p>
+                                    <p><strong>Precio:</strong> ${{ detalle.precio_historico }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <hr>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+{% endblock %}
+

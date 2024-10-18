@@ -5,7 +5,6 @@ from rest_framework.documentation import include_docs_urls
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 router = routers.DefaultRouter()
 router.register(r'categoria', views.CategoriaViewSet)
 router.register(r'producto', views.ProductoViewSet)
@@ -63,13 +62,12 @@ urlpatterns = [
  
 	# CRUD de Devoluciones
 	path("devoluciones/", views.devoluciones, name="devoluciones"),
-    path("ver_devoluciones", views.ver_devoluciones,name="ver_devoluciones"),
 	path("devoluciones_form/", views.devoluciones_form, name="devoluciones_form"),
 	path("devoluciones_crear/", views.devoluciones_crear, name="devoluciones_crear"),
 	path("devoluciones_formulario_editar/<int:id>", views.devoluciones_formulario_editar, name="devoluciones_formulario_editar"),
 	path("devoluciones_actualizar/", views.devoluciones_actualizar, name="devoluciones_actualizar"),
 	path("devoluciones_eliminar/<int:id>", views.devoluciones_eliminar, name="devoluciones_eliminar"),
-	path('devoluciones/estado/<int:id>/', views.estado_devolucion, name='estado_devolucion'),
+
     path('cargar/', views.cargar_image, name='cargar_image'),
 
 	# carrito de compra
@@ -120,6 +118,18 @@ urlpatterns = [
      
 	#Trabaja con nosotros
  	path("trabaja_nosotros/", views.trabaja_nosotros, name="trabaja_nosotros"),
+
+	#Pedidos y devoluciones
+	path('mis_pedidos/', views.ver_pedidos_cliente, name='mis_pedidos'),
+	path('cancelar_pedido/<int:pedido_id>/', views.cancelar_pedido, name='cancelar_pedido'),
+    path('admin_pedidos/', views.lista_usuarios, name="lista_usuarios"),
+    path('usuarios/<int:usuario_id>/pedidos/', views.ver_pedidos_usuario, name="ver_pedidos_usuario"),
+    path('pedidos/<int:pedido_id>/cambiar_estado/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
+    
+    path('pedido/<int:pedido_id>/apelar/', views.apelar_devolucion, name="apelar_devolucion"),
+    path('mis_devoluciones/', views.ver_mis_devoluciones, name='ver_mis_devoluciones'),
+    path('devoluciones_admin/', views.listar_devoluciones, name='listar_devoluciones'),
+    path('devoluciones/<int:devolucion_id>/cambiar_estado/', views.cambiar_estado_devolucion, name='cambiar_estado_devolucion'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

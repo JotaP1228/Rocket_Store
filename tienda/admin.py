@@ -64,10 +64,10 @@ class ProductoSubCategoriaAdmin(admin.ModelAdmin):
 class Comentarios(admin.ModelAdmin):
 	list_display = ["id", "comentarios", "descripcion", "fecha_creacion"]
 
-@admin.register(Devoluciones)
-class Devoluciones(admin.ModelAdmin):
-	list_display = ["id", "nombre", "email", "telefono", "descripcion", "estado"]
-
+@admin.register(Devolucion)
+class DevolucionAdmin(admin.ModelAdmin):
+	list_display = ['id', 'fecha_devolucion', 'pedido', 'usuario','motivo','estado']
+	
 @admin.register(CarouselItem)
 class CarouselItem(admin.ModelAdmin):
     list_display = ['titulo','descripcion','imagen']

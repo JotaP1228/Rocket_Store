@@ -1,0 +1,39 @@
+{% extends 'tienda/inicio/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block titulo %}Apelar Devolución{% endblock %}
+
+{% block contenedor %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Apelar Devolución</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Detalles del Pedido</h5>
+                    <p><strong>ID del Pedido:</strong> {{ pedido.id }}</p>
+                    <p><strong>Estado del Pedido:</strong> {{ pedido.get_estado_display }}</p>
+                    <p><strong>Fecha de Venta:</strong> {{ pedido.fecha_venta }}</p>
+                    <hr>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="motivo">Motivo de la Devolución</label>
+                            <textarea class="form-control" id="motivo" name="motivo" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="foto">Subir Imagen (Opcional):</label>
+                            <input type="file" class="form-control-file" id="foto" name="foto">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Enviar Apelación</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

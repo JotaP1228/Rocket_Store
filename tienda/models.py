@@ -105,16 +105,26 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
-class Devoluciones(models.Model):
-    nombre = models.CharField(max_length=254)
-    email = models.EmailField(max_length=254, unique=True)
-    telefono = models.IntegerField()
-    descripcion = models.TextField()
-    estado = models.IntegerField(choices=[(1, 'Pendiente'), (2, 'Aceptada'), (3, 'Rechazada')], default=1)
-    image = models.ImageField(upload_to='devoluciones/', null=True, blank=True)
+class Devolucion(models.Model):
+    pedido = models.ForeignKey(Venta, on_delete=models.CASCADE, related_name="devoluciones")
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    motivo = models.TextField()
+    fecha_devolucion = models.DateTimeField(auto_now_add=True)
+    foto = models.ImageField(upload_to='devoluciones_fotos/', blank=True, null=True)
+    ESTADOS = (
+        (1, 'Enviada'),
+        (2, 'Aceptada'),
+        (3, 'Rechazada'),
+    )
+    estado = models.IntegerField(choices=ESTADOS, default=1)  # Estado por defecto es 'Enviada'
+    
+    # Método para obtener el estado en texto
+    def estado_texto(self):
+        return dict(self.ESTADOS).get(self.estado, 'Desconocido')
 
     def __str__(self):
-        return self.nombre
+        return f"Devolución para Pedido #{self.pedido.id} - Usuario: {self.usuario.username}"
+    
 	
 class Comentarios(models.Model):
     comentarios = models.TextField()
