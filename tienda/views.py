@@ -224,20 +224,26 @@ def usuarios_actualizar(request):
         id = request.POST.get("id") 
         try:
             q = Usuario.objects.get(pk=id)
-            # Actualiza los campos del usuario
-            q.nombre = request.POST.get("nombre")
-            q.email = request.POST.get("email")
-            q.rol = request.POST.get("rol")
-            password = request.POST.get("password")
             
+            # Obtiene los valores de los campos del formulario
+            rol = request.POST.get("rol")
+            password = request.POST.get("password")
+
+            # Actualiza los campos del usuario
+            q.rol = rol
+            
+            # Actualiza la contraseña si se proporciona
             if password:
                 q.set_password(password)
             
+            # Guarda el usuario
             q.save()
             messages.success(request, "Usuario actualizado correctamente!!")
         except Usuario.DoesNotExist:
             messages.error(request, "El usuario no existe.")
-    
+        except Exception as e:
+            messages.error(request, f"Ocurrió un error: {e}")
+
     return redirect("usuarios_listar")
 
 #---------------
@@ -631,13 +637,24 @@ def productos_eliminar(request, id):
 
 @admin_requerido_id
 def productos_formulario_editar(request, id):
-	q = Producto.objects.get(pk=id)
-	c = CategoriaEtiqueta.objects.all()
-	e = SubCategoriaEtiqueta.objects.all()
-	t = Tallas.objects.all()
-	pt = ProductoTallas.objects.all()
-	contexto = {"data": q, "categoria": c, "etiqueta":e, "talla":t, "proTallas":pt}
-	return render(request, "tienda/productos/productos_formulario_editar.html", contexto)
+    q = Producto.objects.get(pk=id)
+    c = CategoriaEtiqueta.objects.all()
+    e = SubCategoriaEtiqueta.objects.all()
+    t = Tallas.objects.all()
+    pt = ProductoTallas.objects.all()
+
+    fecha_actual = datetime.now().strftime('%Y-%m-%d')  # Obtener la fecha actual en formato 'YYYY-MM-DD'
+
+    contexto = {
+        "data": q,
+        "categoria": c,
+        "etiqueta": e,
+        "talla": t,
+        "proTallas": pt,
+        "fecha_actual": fecha_actual  # Pasar la fecha actual al contexto
+    }
+    
+    return render(request, "tienda/productos/productos_formulario_editar.html", contexto)
 
 @admin_requerido
 def productos_actualizar(request):
@@ -658,13 +675,37 @@ def productos_actualizar(request):
         tallas = request.POST.getlist("talla")
         foto = request.FILES.get("foto")
 
-        if not precio.isdigit():
-            messages.error(request, "El precio solo puede llevar valores numéricos")
-            return redirect("productos_listar")
+        # Validar que los campos no estén vacíos
+        def validar_campo_vacio(campo, nombre_campo):
+            if not campo:
+                messages.error(request, f"El campo {nombre_campo} no puede estar vacío.")
+                return False
+            return True
 
-        if not inventario.isdigit():
-            messages.error(request, "El inventario solo puede llevar valores numéricos")
-            return redirect("productos_listar")
+        if not validar_campo_vacio(nombre, "Nombre") or not validar_campo_vacio(precio, "Precio") or not validar_campo_vacio(inventario, "Inventario") or not validar_campo_vacio(fecha_creacion, "Fecha de creación") or not validar_campo_vacio(categoria_id, "Categoría"):
+            return redirect("productos_formulario_editar", id=id_producto)
+
+        # Validar que el precio sea un número positivo
+        if not re.match(r'^\d+(\.\d{1,2})?$', precio) or float(precio) <= 0:
+            messages.error(request, "El precio debe ser un número positivo y mayor que cero.")
+            return redirect("productos_formulario_editar", id=id_producto)
+
+        # Validar que el inventario sea un número positivo
+        if not inventario.isdigit() or int(inventario) < 0:
+            messages.error(request, "El inventario solo puede contener valores numéricos positivos.")
+            return redirect("productos_formulario_editar", id=id_producto)
+
+        # Validar la fecha de creación
+        try:
+            fecha_creacion_dt = datetime.strptime(fecha_creacion, "%Y-%m-%d").date()
+
+            if fecha_creacion_dt > timezone.now().date():
+                messages.error(request, "La fecha de creación no puede ser en el futuro.")
+                return redirect("productos_formulario_editar", id=id_producto)
+        except ValueError:
+            messages.error(request, "La fecha de creación no tiene un formato válido.")
+            return redirect("productos_formulario_editar", id=id_producto)
+
 
         try:
             producto = Producto.objects.get(pk=id_producto)
@@ -673,9 +714,9 @@ def productos_actualizar(request):
             producto.precio = precio
             producto.informacion = informacion
             producto.inventario = inventario
-            producto.fecha_creacion = fecha_creacion
+            producto.fecha_creacion = fecha_creacion_dt
             producto.categoria_id = categoria_id
-            
+
             if foto:
                 producto.foto = foto
 
@@ -837,43 +878,41 @@ def devoluciones_eliminar(request, id):
 def carrito_add(request):
     if request.method == "POST":
         try:
-            carrito = request.session.get("carrito", [])
+            carrito = request.session.get("carrito", False)
             if not carrito:
                 request.session["carrito"] = []
                 request.session["items"] = 0
+                carrito = []
 
             id_producto = int(request.POST.get("id"))
-            cantidad = int(request.POST.get("cantidad", 0))
-
+            cantidad = request.POST.get("cantidad")
+            # Consulto el producto en DB...........................
             q = Producto.objects.get(pk=id_producto)
-
-            producto_en_carrito = False
-
             for p in carrito:
                 if p["id"] == id_producto:
-                    producto_en_carrito = True
-                    if q.inventario >= (p["cantidad"] + cantidad) and cantidad > 0:
-                        p["cantidad"] += cantidad
+                    if q.inventario >= (p["cantidad"] + int(cantidad)) and int(cantidad) > 0:
+                        p["cantidad"] += int(cantidad)
                         p["subtotal"] = p["cantidad"] * q.precio
                     else:
                         print("Cantidad supera inventario...")
                         messages.warning(request, "Cantidad supera inventario...")
                     break
-
-            if not producto_en_carrito:
+            else:
                 print("No existe en carrito... lo agregamos")
-                if q.inventario >= cantidad and cantidad > 0:
+                if q.inventario >= int(cantidad) and int(cantidad) > 0:
                     carrito.append(
                         {
                             "id": q.id,
                             "foto": q.foto.url,
                             "producto": q.nombre,
-                            "precio": q.precio,
                             "informacion": q.informacion,
-                            "cantidad": cantidad,
-                            "subtotal": cantidad * q.precio
+                            "categoria": q.categoria.nombre,
+                            "precio": q.precio,
+                            "cantidad": int(cantidad),
+                            "subtotal": int(cantidad) * q.precio
                         }
                     )
+                    print(carrito)
                 else:
                     print("Cantidad supera inventario...")
                     messages.warning(request, "No se puede agregar, no hay suficiente inventario.")
@@ -888,8 +927,8 @@ def carrito_add(request):
             request.session["items"] = len(carrito)
 
             return render(request, "tienda/carrito/carrito.html", contexto)
-        except ValueError:
-            messages.error(request, "Error: Digite un valor correcto para cantidad")
+        except ValueError as e:
+            messages.error(request, f"Error: Digite un valor correcto para cantidad")
             return HttpResponse("Error")
         except Exception as e:
             messages.error(request, f"Ocurrió un Error: {e}")
@@ -897,7 +936,6 @@ def carrito_add(request):
     else:
         messages.warning(request, "No se enviaron datos.")
         return HttpResponse("Error")
-
 
 
 def visualizar_carrito(request):
@@ -986,9 +1024,15 @@ def actualizar_totales_carrito(request, id_producto):
 	if carrito != False:
 		for i, item in enumerate(carrito):
 			if item["id"] == id_producto:
-				item["cantidad"] = int(cantidad)
-				item["subtotal"] = int(cantidad) * item["precio"]
-				break
+				q = Producto.objects.get(pk=id_producto)
+				if q.inventario >= int(cantidad) and int(cantidad) > 0:
+					item["cantidad"] = int(cantidad)
+					item["subtotal"] = int(cantidad) * item["precio"]
+					break
+				else:
+					print("Cantidad supera inventario...")
+					messages.warning(request, "No se puede agregar, no hay suficiente inventario.")
+					return HttpResponse("Error")
 		else:
 			messages.warning(request, "No se encontró el ítem en el carrito.")
 
@@ -1003,15 +1047,22 @@ def actualizar_totales_carrito_ver(request, id_producto):
 	if carrito != False:
 		for i, item in enumerate(carrito):
 			if item["id"] == id_producto:
-				item["cantidad"] = int(cantidad)
-				item["subtotal"] = int(cantidad) * item["precio"]
-				break
+				q = Producto.objects.get(pk=id_producto)
+				if q.inventario >= int(cantidad) and int(cantidad) > 0:
+					item["cantidad"] = int(cantidad)
+					item["subtotal"] = int(cantidad) * item["precio"]
+					break
+				else:
+					print("Cantidad supera inventario...")
+					messages.warning(request, "No se puede agregar, no hay suficiente inventario.")
+					return JsonResponse({"status": "error", "message": "No hay suficiente inventario."})
 		else:
 			messages.warning(request, "No se encontró el ítem en el carrito.")
+			return JsonResponse({"status": "error", "message": "Producto no encontrado."})
 
 	request.session["items"] = len(carrito)
 	request.session["carrito"] = carrito
-	return redirect("visualizar_carrito")
+	return JsonResponse({"status": "success", "total": sum(p["subtotal"] for p in carrito)})
 
 def realizar_venta(request):
     # Verificar si el usuario está autenticado
@@ -1637,7 +1688,7 @@ from .models import Usuario
 
 def ver_pedidos_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)
-    pedidos = Venta.objects.filter(usuario=usuario).prefetch_related('detalleventa_set').order_by('-id')
+    pedidos = Venta.objects.filter(usuario=usuario).prefetch_related('detalleventa_set')
     
     for pedido in pedidos:
             # Calcular el total del pedido (precio total de todos los productos)
@@ -1760,6 +1811,7 @@ def listar_devoluciones(request):
     }
     return render(request, 'tienda/devolucion/listar_devoluciones.html', context)
 
+from django.contrib.admin.views.decorators import staff_member_required
 def cambiar_estado_devolucion(request, devolucion_id):
     if request.method == 'POST':
         # Obtenemos la devolución correspondiente
@@ -1769,14 +1821,14 @@ def cambiar_estado_devolucion(request, devolucion_id):
         nuevo_estado = request.POST.get('estado')
 
         # Verificamos que el nuevo estado sea válido
-        if nuevo_estado in ['1', '2', '3']:  # Asegúrate de que estos valores coincidan con los estados de tu modelo
+        if nuevo_estado in ['1', '2', '3']:  
             # Asignamos el nuevo estado a la devolución
             devolucion.estado = int(nuevo_estado)
             devolucion.save()  # Guardamos los cambios en la base de datos
 
             # Redirigimos al administrador a la lista de devoluciones
             messages.success(request, 'El estado de la devolución ha sido cambiado con éxito.')
-            return redirect('listar_devoluciones')  # Asegúrate de que 'devoluciones_admin' sea la ruta correcta
+            return redirect('listar_devoluciones')  
         else:
             messages.error(request, 'Estado inválido.')
             return redirect('listar_devoluciones')  # Redirige a la lista de devoluciones si el estado no es válido

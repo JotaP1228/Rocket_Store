@@ -58,7 +58,7 @@ class Producto(models.Model):
 	precio = models.IntegerField()
 	inventario = models.IntegerField()
 	fecha_creacion = models.DateField()
-	categoria = models.ForeignKey(CategoriaEtiqueta,on_delete=models.CASCADE)
+	categoria = models.ForeignKey(CategoriaEtiqueta,on_delete=models.DO_NOTHING)
 	foto = models.ImageField(upload_to="fotos_productos/", default="fotos_productos/default.png")
 
 	def __str__(self):

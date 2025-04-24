@@ -15,7 +15,7 @@
         <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 {% for image in carousel_items %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class=" {% if forloop.first %}active{% endif %}">
                         <img src="{{ image.imagen.url }}" class="d-block w-100" alt="{{ image.alt_text }}">
                     </div>
                 {% endfor %}

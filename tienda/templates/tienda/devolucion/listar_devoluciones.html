@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Devolución #{{ devolucion.id }}</h5>
-                    <p class="card-text">Usuario: {{ devolucion.usuario.nombre }}</p>
+                    <p class="card-text">Usuario: {{ devolucion.pedido.usuario.nombre }}</p>
                     <p class="card-text">Motivo: {{ devolucion.motivo }}</p>
                     <p class="card-text">Estado: {{ devolucion.estado_texto }}</p>
                     <form action="{% url 'cambiar_estado_devolucion' devolucion.id %}" method="post">

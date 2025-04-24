@@ -8,22 +8,27 @@
     {% if request.session.carrito %}
         <div class="contenedor-carrito">
             <div class="productos">
+            
+
                 {% for p in request.session.carrito %}
                     <div class="card mb-3" style="max-width: 800px; margin: auto; border: 1px solid #ddd; border-radius: 8px;">
                         <div class="row g-0">
                             <div class="col-md-4">
                                 <img src="{{ p.foto }}" class="img-fluid rounded-start" alt="{{ p.producto }}" style="height: 250px; object-fit: cover;">
                             </div>
+
+                                    
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <h4 class="card-title">{{ p.producto }}</h4>
-                                    <p class="text-muted">Categoría: <strong>{{ p.categoria }}</strong></p>
-                                    <p class="text-muted">Información: <strong>{{ p.informacion }}</strong></p>
+                                  
+                                        <h4 class="card-title">{{ p.producto }}</h4>
+                                        <p class="text-muted">Categoría: <strong>{{ p.categoria }}</strong></p>
+                                        <p class="text-muted">Información: <strong>{{ p.informacion }}</strong></p>
                                     
 
                                     <div class="d-flex align-items-center">
                                         <input type="hidden" name="id" id="id_{{ p.id }}" value="{{ p.id }}" />
-                                        <input oninput="actualizar_totales_carrito(`{% url 'actualizar_totales_carrito' p.id %}`, {{ p.id }});" 
+                                        <input oninput="actualizar_totales_carrito_ver(`{% url 'actualizar_totales_carrito_ver' p.id %}`, {{ p.id }});" 
                                         type="number" 
                                         style="width: 80px; margin-right: 10px;" 
                                         name="cantidad" id="cantidad_carrito_{{ p.id }}" 
@@ -34,14 +39,17 @@
 
                                         <a class="btn btn-danger" href="{% url 'eliminar_item_carrito_ver' p.id %}">Eliminar</a>
                                     </div>
+                                    
+                                
 
-                                    <p class="card-text mt-3"><small class="text-body-secondary">Subtotal: ${{ p.subtotal|floatformat:0|intcomma }}</small></p>
+                                    <p class="card-text mt-3"><small class="text-body-secondary"> <strong>Subtotal:</strong> ${{ p.subtotal|floatformat:0|intcomma }}</small></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
+            
 
             <div class="resumen" style="display: flex; align-items:center; justify-content: center; margin-top: 20px;">   
                 <div class="card" style="border: 1px solid #ddd; width: 25rem;">
@@ -56,6 +64,7 @@
                 </div>
             </div>
         </div>
+        
     {% else %}
         <p class="text-center">No hay productos en el carrito.</p>
     {% endif %}

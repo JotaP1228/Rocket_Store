@@ -18,6 +18,7 @@ router.register(r'detalle-venta', views.DetalleVentaViewSet)
 router.register(r'comentarios', views.ComentariosViewSet)
 
 urlpatterns = [
+	path('index/', views.index, name="index"),
 	path('', views.inicio, name="inicio"),
     
 	#API

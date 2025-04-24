@@ -5,7 +5,7 @@
 
 {% block contenedor %}
 
-<div class="d-flex justify-content-center align-items-center vh-100">
+<div class="d-flex justify-content-center align-items-center my-5">
     <div class="border rounded shadow-lg p-4" style="width: 100%; max-width: 700px;">
         <h1 class="text-center mb-4">Actualizar Producto ({{ data.id }})</h1>
         
@@ -35,8 +35,8 @@
 
             <div class="mb-3">
                 <label class="form-label">Fecha de Creación</label>
-                <input class="form-control" type="date" name="fecha_creacion" value="{{ data.fecha_creacion|date:'Y-m-d' }}" required />
-            </div>
+                <input class="form-control" type="date" name="fecha_creacion" value="{{ data.fecha_creacion|date:'Y-m-d' }}" max="{{ fecha_actual }}" required />
+            </div>              
 
             <div class="mb-3">
                 <label class="form-label">Tallas a seleccionar</label>

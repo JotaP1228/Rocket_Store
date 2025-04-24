@@ -56,23 +56,28 @@
                     {% endif %}
 
                     <!-- Sección de devoluciones -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle nav-link active" href="#" role="button"
-                            data-bs-toggle="dropdown">Devoluciones</a>
-                        <ul class="dropdown-menu">
-                            {% if request.session.logueo.rol == 3 %}
-                            <li>
-                                <a class="dropdown-item" href="{% url 'ver_mis_devoluciones' %}">Ver devolucion</a>
-                            </li>
-                            {% endif %}
-                            {% if request.session.logueo.rol == 1 %}
-                            <li>
-                                <a class="dropdown-item" href="{% url 'listar_devoluciones'%}">Ver devolucion admin</a>
-                            </li>
-                            {% endif %}
-                            
-                        </ul>
-                    </li>
+                    {% if request.session.logueo.rol == 1 or request.session.logueo.rol == 3 %}
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle nav-link active" href="#" role="button"
+                                data-bs-toggle="dropdown">Devoluciones</a>
+
+                            <ul class="dropdown-menu">
+                                {% if request.session.logueo.rol == 3 %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'ver_mis_devoluciones' %}">Ver devolucion</a>
+                                </li>
+                                {% endif %}
+                                {% if request.session.logueo.rol == 1 %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'listar_devoluciones'%}">Ver devolucion admin</a>
+                                </li>
+                                {% endif %}
+                                
+                            </ul>
+                        </li>
+                    {% endif %}
+
 
                     <!-- Sección de pedidos -->
                     <li class="nav-item dropdown">

@@ -28,7 +28,7 @@
                             <td>{{ r.id }}</td>
                             <td>{{ r.nombre }}</td>
                             <td>{{ r.email }}</td>
-                            <td>{{ r.rol }}</td>
+                            <td style="display: flex; justify-content: center;">{{ r.get_rol_display }}</td>
                             <td>
                                 {% if r.foto %}
                                     <img src="{{ r.foto.url }}" alt="Foto de {{ r.nombre }}" style="width: 50px; height: 50px; border-radius: 50%;" />
